@@ -20,7 +20,8 @@ mod hash_agg;
 mod insert;
 mod limit;
 mod projection;
-pub mod sort_agg;
+mod sort_agg;
+mod top_n;
 mod trace;
 mod values;
 
@@ -34,6 +35,8 @@ pub use projection::*;
 use risingwave_common::array::DataChunk;
 use risingwave_common::catalog::Schema;
 use risingwave_common::error::Result;
+pub use sort_agg::*;
+pub use top_n::*;
 pub use trace::*;
 pub use values::*;
 

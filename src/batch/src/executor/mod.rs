@@ -24,7 +24,6 @@ use risingwave_common::error::Result;
 use risingwave_pb::plan::plan_node::NodeBody;
 use risingwave_pb::plan::PlanNode;
 pub use row_seq_scan::*;
-use top_n::*;
 
 use self::fuse::FusedExecutor;
 use crate::executor::create_source::CreateSourceExecutor;
@@ -36,11 +35,10 @@ use crate::executor::join::HashJoinExecutorBuilder;
 use crate::executor::stream_scan::StreamScanExecutor;
 use crate::executor::trace::TraceExecutor;
 use crate::executor2::executor_wrapper::ExecutorWrapper;
-use crate::executor2::sort_agg::*;
 use crate::executor2::{
     BoxedExecutor2, BoxedExecutor2Builder, DeleteExecutor2, FilterExecutor2,
-    HashAggExecutor2Builder, InsertExecutor2, LimitExecutor2, ProjectionExecutor2, TraceExecutor2,
-    ValuesExecutor2,
+    HashAggExecutor2Builder, InsertExecutor2, LimitExecutor2, ProjectionExecutor2,
+    SortAggExecutor2, TopNExecutor2, TraceExecutor2, ValuesExecutor2,
 };
 use crate::task::{BatchEnvironment, TaskId};
 
@@ -60,7 +58,6 @@ mod row_seq_scan;
 mod stream_scan;
 #[cfg(test)]
 pub mod test_utils;
-mod top_n;
 mod trace;
 
 /// `Executor` is an operator in the query execution.
@@ -193,7 +190,7 @@ impl<'a> ExecutorBuilder<'a> {
             NodeBody::OrderBy => OrderByExecutor,
             NodeBody::CreateSource => CreateSourceExecutor,
             NodeBody::SourceScan => StreamScanExecutor,
-            NodeBody::TopN => TopNExecutor,
+            NodeBody::TopN => TopNExecutor2,
             NodeBody::Limit => LimitExecutor2,
             NodeBody::Values => ValuesExecutor2,
             NodeBody::NestedLoopJoin => NestedLoopJoinExecutor,
@@ -222,7 +219,7 @@ impl<'a> ExecutorBuilder<'a> {
             NodeBody::OrderBy => OrderByExecutor,
             NodeBody::CreateSource => CreateSourceExecutor,
             NodeBody::SourceScan => StreamScanExecutor,
-            NodeBody::TopN => TopNExecutor,
+            NodeBody::TopN => TopNExecutor2,
             NodeBody::Limit => LimitExecutor2,
             NodeBody::Values => ValuesExecutor2,
             NodeBody::NestedLoopJoin => NestedLoopJoinExecutor,

@@ -35,7 +35,7 @@ use crate::executor2::{BoxedDataChunkStream, BoxedExecutor2, BoxedExecutor2Build
 ///
 /// As a special case, simple aggregate without groups satisfies the requirement
 /// automatically because all tuples should be aggregated together.
-pub(crate) struct SortAggExecutor2 {
+pub struct SortAggExecutor2 {
     agg_states: Vec<BoxedAggState>,
     group_exprs: Vec<BoxedExpression>,
     sorted_groupers: Vec<BoxedSortedGrouper>,
@@ -237,7 +237,6 @@ mod tests {
             group_exprs: vec![],
             sorted_groupers: vec![],
             child: Box::new(child),
-            child_done: false,
             schema: Schema { fields },
             identity: "SortAggExecutor".to_string(),
         });
@@ -333,7 +332,6 @@ mod tests {
             group_exprs,
             sorted_groupers,
             child: Box::new(child),
-            child_done: false,
             schema: Schema { fields },
             identity: "SortAggExecutor".to_string(),
         });
