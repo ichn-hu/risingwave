@@ -24,7 +24,6 @@ use risingwave_common::error::Result;
 use risingwave_pb::plan::plan_node::NodeBody;
 use risingwave_pb::plan::PlanNode;
 pub use row_seq_scan::*;
-use sort_agg::*;
 use top_n::*;
 
 use self::fuse::FusedExecutor;
@@ -37,6 +36,7 @@ use crate::executor::join::HashJoinExecutorBuilder;
 use crate::executor::stream_scan::StreamScanExecutor;
 use crate::executor::trace::TraceExecutor;
 use crate::executor2::executor_wrapper::ExecutorWrapper;
+use crate::executor2::sort_agg::*;
 use crate::executor2::{
     BoxedExecutor2, BoxedExecutor2Builder, DeleteExecutor2, FilterExecutor2,
     HashAggExecutor2Builder, InsertExecutor2, LimitExecutor2, ProjectionExecutor2, TraceExecutor2,
@@ -57,7 +57,6 @@ mod merge_sort_exchange;
 pub mod monitor;
 mod order_by;
 mod row_seq_scan;
-mod sort_agg;
 mod stream_scan;
 #[cfg(test)]
 pub mod test_utils;
@@ -190,7 +189,7 @@ impl<'a> ExecutorBuilder<'a> {
             NodeBody::Exchange => ExchangeExecutor,
             NodeBody::Filter => FilterExecutor2,
             NodeBody::Project => ProjectionExecutor2,
-            NodeBody::SortAgg => SortAggExecutor,
+            NodeBody::SortAgg => SortAggExecutor2,
             NodeBody::OrderBy => OrderByExecutor,
             NodeBody::CreateSource => CreateSourceExecutor,
             NodeBody::SourceScan => StreamScanExecutor,
@@ -219,7 +218,7 @@ impl<'a> ExecutorBuilder<'a> {
             NodeBody::Exchange => ExchangeExecutor,
             NodeBody::Filter => FilterExecutor2,
             NodeBody::Project => ProjectionExecutor2,
-            NodeBody::SortAgg => SortAggExecutor,
+            NodeBody::SortAgg => SortAggExecutor2,
             NodeBody::OrderBy => OrderByExecutor,
             NodeBody::CreateSource => CreateSourceExecutor,
             NodeBody::SourceScan => StreamScanExecutor,

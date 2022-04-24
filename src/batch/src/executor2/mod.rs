@@ -20,8 +20,10 @@ mod hash_agg;
 mod insert;
 mod limit;
 mod projection;
+pub mod sort_agg;
 mod trace;
 mod values;
+
 pub use delete::*;
 pub use filter::*;
 use futures::stream::BoxStream;
